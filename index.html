@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>...</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+  <h2>愛知県公立高校 ボーダーシミュレーション</h2>
+
+  <!-- 検索エリア -->
+  <div class="section" style="position:relative;max-width:420px;">
+    <label>高校名で検索：
+      <input type="text" id="school-search" autocomplete="off" placeholder="高校名を入力してください...">
+    </label>
+    <div id="suggest-box" class="suggest-list" style="display:none;"></div>
+  </div>
+
+  <!-- 検索詳細テーブル -->
+  <div class="section" id="result-area" style="display:none;">
+    <table>
+      <thead>
+        <tr>
+          <th>高校名</th><th>学科</th><th>校内順位計算方式</th><th>内申ボーダー</th><th>テストボーダー</th><th>ボーダー</th>
+        </tr>
+      </thead>
+      <tbody id="result-table"></tbody>
+    </table>
+  </div>
+
+  <!-- 内申点入力 -->
+  <div class="section" id="naishin-area" style="display:none;">
+    <label>あなたの内申点（0〜45）：<input id="naishin" type="number" min="0" max="45" step="1"></label>
+    <div>2倍した内申点： <span id="naishin-doubled">--</span></div>
+    <div>
+      <span>型の重み反映値: <span id="weighted-naishin">--</span></span>
+      ／ ボーダー - 型の重み反映値 = 取るべき当日点: <span id="todojitsu-score">--</span>
+    </div>
+  </div>
+
+  <!-- 当日点配分テーブル -->
+  <div class="section" id="score-table-area" style="display:none;">
+    <table>
+      <thead>
+        <tr><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th><th>合計</th><th>何点必要か</th></tr>
+      </thead>
+      <tbody>
+        <tr id="score-input-row">
+          <td><input type="number" min="0" max="100" class="score-input" id="score-Japanese"></td>
+          <td><input type="number" min="0" max="100" class="score-input" id="score-Math"></td>
+          <td><input type="number" min="0" max="100" class="score-input" id="score-English"></td>
+          <td><input type="number" min="0" max="100" class="score-input" id="score-Science"></td>
+          <td><input type="number" min="0" max="100" class="score-input" id="score-Social"></td>
+          <td id="score-total">0</td>
+          <td id="score-delta">--</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+<script>
+// --- データ管理 ---
+let allSchools = [];
+let selectedSchool = null;
+
+// --- 校名サジェスト・検索・選択 ---
+document.getElementById('school-search').addEventListener('input', function() {
+  const kw = this.value.trim();
+  updateSuggest(kw);
+});
+document.getElementById('school-search').addEventListener('focus', function() {
+  const kw = this.value.trim();
+  updateSuggest(kw);
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('#school-search') && !e.target.closest('#suggest-box')) {
+    document.getElementById('suggest-box').style.display = 'none';
+  }
+});
+
+function updateSuggest(kw) {
+  const suggestBox = document.getElementById('suggest-box');
+  if (!allSchools.length) { suggestBox.style.display = 'none'; return; } // データまだ
+  if (!kw) { suggestBox.style.display = 'none'; return; }
+  const norm = normalize(kw);
+  const list = allSchools.filter(s => normalize(s.name).includes(norm));
+  if (!list.length) { suggestBox.style.display = 'none'; return; }
+  // 同名高校に学科も付与
+  suggestBox.innerHTML = list.map(s => `<div data-name="${s.name}" data-course="${s.course}">${s.name} (${s.course === '普' ? '普通' : s.course})</div>`).join('');
+  suggestBox.style.display = 'block';
+  Array.from(suggestBox.children).forEach(el => {
+    el.onclick = function() {
+      document.getElementById('school-search').value = el.getAttribute('data-name');
+      suggestBox.style.display = 'none';
+      selectSchoolByNameAndCourse(el.getAttribute('data-name'), el.getAttribute('data-course'));
+    }
+  });
+}
+function selectSchoolByNameAndCourse(name, course) {
+  selectedSchool = allSchools.find(s => s.name === name && s.course === course);
+  if(selectedSchool) {
+    showSchoolTable(selectedSchool);
+    document.getElementById('result-area').style.display = '';
+    document.getElementById('naishin-area').style.display = '';
+    document.getElementById('score-table-area').style.display = '';
+  } else {
+    document.getElementById('result-area').style.display = 'none';
+    document.getElementById('naishin-area').style.display = 'none';
+    document.getElementById('score-table-area').style.display = 'none';
+  }
+  // 入力欄はリセットしない（値を保持）
+  showNaishinResults();
+  updateScoreTable();
+}
+function showSchoolTable(s) {
+  document.getElementById('result-table').innerHTML = `
+    <tr class="highlight">
+      <td>${s.name}</td>
+      <td>${s.course === '普' ? '普通' : s.course}</td>
+      <td>${formatScoreType(s.score_type)}</td>
+      <td>${s.border_naishin || ''}</td>
+      <td>${s.border_exam || ''}</td>
+      <td>${s.border_total || ''}</td>
+    </tr>
+  `;
+}
+// --- サジェスト用 正規化関数 ---
+function zenkakuToHankaku(str) {
+  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+    return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+  });
+}
+function normalize(s) {
+  return zenkakuToHankaku((s||"").toLowerCase().replace(/[\s　]+/g, ""));
+}
+// --- 校内順位計算方式の表示フォーマット ---
+function formatScoreType(st) {
+  if (!st) return '';
+  if (typeof st === 'string') st = parseInt(st, 10);
+  const roman = ['','Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ'];
+  return roman[Number(st)] || st;
+}
+// --- 内申点ブロック ---
+const naishinInput = document.getElementById('naishin');
+naishinInput.addEventListener('input', function(){
+  showNaishinResults();
+  updateScoreTable(); // 内申入力時にスコアテーブルも更新
+});
+function calcWeightedNaishin(val, st) {
+  // score_type: 1〜5
+  if (!val) val = 0;
+  // 内申点は最大90でval*2
+  switch(Number(st)) {
+    case 2: return val * 2 * 1.5; // II型=内申1.5倍
+    case 3: return val * 2;       // III型=重みは当日点
+    case 4: return val * 2 * 2;   // IV型=内申2倍
+    case 5: return val * 2;       // V型=重みは当日点
+    default: return val * 2;      // I型他=等配分
+  }
+}
+function calcWeightedExam(exam, st) {
+  // 各教科0-22点→合計0〜110点
+  if (!exam) exam = 0;
+  switch(Number(st)) {
+    case 2: return exam;          // II型=等配分
+    case 3: return exam * 1.5;    // III型=当日点1.5倍
+    case 4: return exam;          // IV型=内申2倍
+    case 5: return exam * 2;      // V型=当日点2倍
+    default: return exam;         // I型他=等配分
+  }
+}
+function getNaishinLabel(st) {
+  switch(Number(st)){
+    case 2: return "内申点×1.5";
+    case 4: return "内申点×2";
+    default: return "内申点";
+  }
+}
+function getExamLabel(st) {
+  switch(Number(st)){
+    case 3: return "当日点×1.5";
+    case 5: return "当日点×2";
+    default: return "当日点";
+  }
+}
+// --- 内申点・配点テーブル計算 ---
+function showNaishinResults() {
+  const s = selectedSchool;
+  if (!s) return;
+  const st = s.score_type;
+  const val = Number(naishinInput.value || '0');
+  // 2倍値
+  const naishin90 = val * 2;
+  document.getElementById('naishin-doubled').textContent = naishin90;
+  // 重み有内申
+  const naishinWeighted = calcWeightedNaishin(val, st);
+  document.getElementById('weighted-naishin').textContent = Math.round(naishinWeighted*10)/10 + `（${getNaishinLabel(st)}）`;
+  // ボーダー・当日点
+  let border_total = Number(s.border_total || 0);
+  let exam_needed = border_total - naishinWeighted;
+  // 型に応じて当日点逆計算（合計=内申重み+当日点重み　→どの当日点ならボーダーを超えるか逆算）
+  let exam_reach = 0;
+  switch(Number(st)){
+    case 2: // II: border_total = naishin*1.5 + exam
+      exam_reach = exam_needed;
+      break;
+    case 3: // III: border_total = naishin + exam*1.5 → (border_total - naishin) / 1.5
+      exam_reach = (border_total - naishinWeighted) / 1.5;
+      break;
+    case 4: // IV: border_total = naishin*2 + exam
+      exam_reach = exam_needed;
+      break;
+    case 5: // V: border_total = naishin + exam*2 → (border_total - naishin) / 2
+      exam_reach = (border_total - naishinWeighted) / 2;
+      break;
+    default: // I: border_total = naishin + exam
+      exam_reach = exam_needed;
+  }
+  document.getElementById('todojitsu-score').textContent = Math.round(exam_reach*10)/10 + ` (${getExamLabel(st)})`;
+}
+// --- 5教科入力 ---
+const subjects = ['Japanese', 'Math', 'English', 'Science', 'Social'];
+subjects.forEach(sub => {
+  document.getElementById('score-' + sub).addEventListener('input', updateScoreTable);
+});
+function resetScores() {
+  subjects.forEach(sub => document.getElementById('score-' + sub).value = '');
+  updateScoreTable();
+}
+function updateScoreTable() {
+  const vals = subjects.map(sub => Number(document.getElementById('score-' + sub).value || '0'));
+  const sum = vals.reduce((a,b) => a+b, 0);
+  const s = selectedSchool;
+  let needed = '--';
+  let showNeeded = '--';
+  if(s) {
+    // 必要当日点計算（取るべき当日点）
+    const st = s.score_type;
+    const val = Number(document.getElementById('naishin').value || '0');
+    const naishinWeighted = calcWeightedNaishin(val, st);
+    let border_total = Number(s.border_total || 0);
+    switch(Number(st)){
+      case 2: needed = border_total - naishinWeighted; break;
+      case 3: needed = (border_total - naishinWeighted) / 1.5; break;
+      case 4: needed = border_total - naishinWeighted; break;
+      case 5: needed = (border_total - naishinWeighted) / 2; break;
+      default: needed = border_total - naishinWeighted;
+    }
+    showNeeded = Math.round(needed*10)/10;
+  }
+  document.getElementById('score-total').textContent = sum;
+  // 差（合計-取るべき当日点）
+  let delta = '--';
+  if(s && needed!== '--') {
+    delta = Math.round((sum - needed)*10)/10;
+    if(delta > 0) delta = '+' + delta;
+    delta = `${showNeeded}点必要 / 現在との差：${delta}`;
+  }
+  document.getElementById('score-delta').textContent = delta;
+}
+// --- データ取得 ---
+fetch('inozyuku_fixed_latest.json')
+  .then(res => res.json())
+  .then(data => { 
+    allSchools = data; 
+    // 入力欄に既に値があれば即サジェスト
+    const val = document.getElementById('school-search').value.trim();
+    if(val) updateSuggest(val);
+  });
+</script>
+</body>
+</html>
