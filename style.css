@@ -1,75 +1,120 @@
+/* ベーススタイル */
 body {
-  font-family: 'Yu Gothic', 'Meiryo', sans-serif;
+  font-family: 'Yu Gothic', 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
   background: #f4f8fc;
-  margin: 0; padding: 0 0 60px 0;
+  margin: 0;
+  padding: 0;
   color: #24334e;
+  line-height: 1.6;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
+
+/* メインコンテナ */
+.main-container {
+  max-width: 700px;
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 20px 15px 60px 15px;
+  box-sizing: border-box;
+  display: block;
+}
+
 h2 {
   font-size: 1.8em;
-  margin: 20px 0 18px 8px;
+  margin: 30px 0 25px 0;
+  padding: 0 20px;
+  text-align: center;
   letter-spacing: 0.05em;
   color: #2a4d7a;
+  font-weight: 600;
 }
+
 .section {
   margin-bottom: 28px;
-  padding: 18px 22px 14px 22px;
+  padding: 22px 28px;
   border-radius: 16px;
   background: #fff;
   box-shadow: 0 2px 14px rgba(40,60,95,0.07);
-  max-width: 650px;
 }
+
 label {
   font-size: 1.08em;
   font-weight: 500;
   margin-bottom: 7px;
-  display: inline-block;
+  display: block;
   color: #33558c;
+  text-align: center;
 }
+
 input[type="text"], input[type="number"] {
   font-size: 1em;
   padding: 7px 10px;
   border: 1px solid #b4c2da;
   border-radius: 8px;
   outline: none;
-  margin: 4px 0;
+  margin: 4px auto;
+  display: block;
   background: #f6fafd;
   transition: border .18s;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
 }
+
 input[type="text"]:focus, input[type="number"]:focus {
   border: 1.5px solid #448dda;
   background: #f0f6fd;
 }
+
+/* テーブルスタイル */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 6px;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 0;
   background: #fafbfe;
-  margin-top: 6px;
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
+  min-width: 600px; /* 最小幅を設定（スマホで横スクロール） */
 }
+
 th, td {
   padding: 8px 12px;
+  white-space: nowrap;
 }
+
 th {
   background: #e3eeff;
   font-size: 1.08em;
   color: #24519e;
   border-bottom: 2px solid #b4d3f7;
+  font-weight: 600;
 }
+
 td {
   text-align: center;
   font-family: inherit;
   border-bottom: 1px solid #e1eaf2;
 }
+
 tr:last-child td {
   border-bottom: none;
 }
+
 tr.highlight {
   background: #faf1d3;
   font-weight: bold;
   color: #a05a00;
 }
+
+/* サジェストリスト */
 .suggest-list {
   border: 1.2px solid #acd0fa;
   position: absolute;
@@ -77,19 +122,27 @@ tr.highlight {
   max-height: 180px;
   overflow-y: auto;
   min-width: 260px;
+  width: 100%;
+  max-width: 400px;
   z-index: 99;
   border-radius: 10px;
   box-shadow: 0 3px 13px rgba(62,92,140,0.10);
+  left: 0;
+  right: 0;
 }
+
 .suggest-list div {
   padding: 7px 11px;
   cursor: pointer;
   font-size: 1.09em;
 }
+
 .suggest-list div:hover {
   background: #e9f3ff;
   color: #13428d;
 }
+
+/* スコア入力 */
 .score-input {
   width: 60px;
   font-size: 1.04em;
@@ -97,14 +150,20 @@ tr.highlight {
   background: #f9fdff;
   border-radius: 7px;
   border: 1px solid #b4c2da;
+  text-align: center;
 }
+
 #score-total, #score-delta {
   font-weight: bold;
 }
+
 #score-delta {
   color: #ec3535;
   font-size: 1.09em;
+  word-break: break-word;
 }
+
+/* スコアサマリー */
 .score-summary {
   background: #eaf6ff;
   border-radius: 12px;
@@ -113,20 +172,24 @@ tr.highlight {
   max-width: 540px;
   box-shadow: 0 2px 8px rgba(30, 80, 180, 0.06);
 }
+
 .summary-label {
   color: #24519e;
   font-weight: 500;
 }
+
 .summary-value {
   font-size: 1.39em;
   font-weight: bold;
   margin: 0 7px;
   color: #36508c;
 }
+
 .summary-calc {
   margin-top: 11px;
   font-size: 1.16em;
 }
+
 .summary-total {
   color: #235afe;
   font-size: 1.37em;
@@ -136,13 +199,195 @@ tr.highlight {
   border-radius: 12px;
   margin-left: 10px;
 }
-@media (max-width: 760px) {
-  .section, .score-summary {
-    max-width: 99vw;
-    padding-left: 7vw;
-    padding-right: 7vw;
+
+/* タブレット向け（481px〜768px） */
+@media (max-width: 768px) {
+  .main-container {
+    max-width: 95%;
+    padding: 15px 10px 50px 10px;
   }
-  table { font-size: 0.95em; }
-  th,td { padding: 7px 7px; }
-  h2 { font-size: 1.25em; margin-left: 2vw; }
+
+  .section {
+    padding: 16px 18px;
+  }
+
+  h2 {
+    font-size: 1.5em;
+    padding: 0 15px;
+  }
+
+  table {
+    font-size: 0.92em;
+    min-width: 550px;
+  }
+
+  th, td {
+    padding: 6px 8px;
+  }
+
+  .score-summary {
+    max-width: 95%;
+    padding: 14px 18px;
+  }
+
+  .summary-value {
+    font-size: 1.25em;
+  }
+
+  .summary-total {
+    font-size: 1.2em;
+  }
+
+  input[type="text"], input[type="number"] {
+    max-width: 100%;
+  }
+
+  .suggest-list {
+    max-width: 100%;
+  }
+}
+
+/* スマホ向け（〜480px） */
+@media (max-width: 480px) {
+  .main-container {
+    max-width: 100%;
+    padding: 10px 8px 40px 8px;
+  }
+
+  h2 {
+    font-size: 1.3em;
+    margin: 20px auto 15px auto;
+    padding: 0 10px;
+    letter-spacing: 0.02em;
+  }
+
+  .section {
+    padding: 14px 12px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+  }
+
+  label {
+    font-size: 1em;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  input[type="text"], input[type="number"] {
+    font-size: 16px; /* iOSでズーム防止 */
+    padding: 10px 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .table-wrapper {
+    margin-left: -12px;
+    margin-right: -12px;
+    padding: 0 12px;
+  }
+
+  table {
+    font-size: 0.85em;
+    min-width: 500px;
+  }
+
+  th {
+    font-size: 0.9em;
+    padding: 6px 5px;
+  }
+
+  td {
+    padding: 6px 5px;
+    font-size: 0.9em;
+  }
+
+  .score-input {
+    width: 50px;
+    font-size: 0.95em;
+    padding: 5px 4px;
+  }
+
+  #score-delta {
+    font-size: 0.95em;
+    line-height: 1.4;
+  }
+
+  .suggest-list {
+    min-width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+    left: 12px;
+    right: 12px;
+  }
+
+  .suggest-list div {
+    padding: 10px 12px;
+    font-size: 1em;
+  }
+
+  .score-summary {
+    max-width: 92%;
+    padding: 12px 14px;
+    margin: 12px auto;
+  }
+
+  .summary-value {
+    font-size: 1.15em;
+    margin: 0 4px;
+  }
+
+  .summary-calc {
+    font-size: 1em;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .summary-total {
+    font-size: 1.1em;
+    padding: 3px 10px;
+    margin-left: 6px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* 内申点表示の調整 */
+  #naishin-area div {
+    font-size: 0.95em;
+    margin: 6px 0;
+    line-height: 1.5;
+    text-align: center;
+  }
+}
+
+/* 内申点エリアの中央寄せ */
+#naishin-area div {
+  text-align: center;
+  margin: 8px 0;
+}
+
+/* 大型デバイス向け（769px以上） */
+@media (min-width: 769px) {
+  .main-container {
+    max-width: 700px;
+  }
+
+  table {
+    min-width: 650px;
+  }
+
+  .score-summary {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* 超大型画面向け（1200px以上） */
+@media (min-width: 1200px) {
+  .main-container {
+    max-width: 800px;
+  }
+
+  table {
+    min-width: 750px;
+  }
 }
