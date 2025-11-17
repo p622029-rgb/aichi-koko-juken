@@ -1,4 +1,11 @@
-/* ベーススタイル */
+/* ============================================
+   愛知県公立高校 ボーダーシミュレーション
+   CSS スタイルシート
+   ============================================ */
+
+/* ============================================
+   1. ベーススタイル
+   ============================================ */
 body {
   font-family: 'Yu Gothic', 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
   background: #f4f8fc;
@@ -10,7 +17,9 @@ body {
   box-sizing: border-box;
 }
 
-/* メインコンテナ */
+/* ============================================
+   2. メインコンテナ（中央配置）
+   ============================================ */
 .main-container {
   max-width: 700px;
   width: 100%;
@@ -21,6 +30,9 @@ body {
   display: block;
 }
 
+/* ============================================
+   3. タイポグラフィ
+   ============================================ */
 h2 {
   font-size: 1.8em;
   margin: 30px 0 25px 0;
@@ -31,14 +43,20 @@ h2 {
   font-weight: 600;
 }
 
+/* ============================================
+   4. セクション（カード）
+   ============================================ */
 .section {
   margin-bottom: 28px;
   padding: 22px 28px;
   border-radius: 16px;
   background: #fff;
-  box-shadow: 0 2px 14px rgba(40,60,95,0.07);
+  box-shadow: 0 2px 14px rgba(40, 60, 95, 0.07);
 }
 
+/* ============================================
+   5. フォーム要素
+   ============================================ */
 label {
   font-size: 1.08em;
   font-weight: 500;
@@ -48,7 +66,8 @@ label {
   text-align: center;
 }
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
   font-size: 1em;
   padding: 7px 10px;
   border: 1px solid #b4c2da;
@@ -57,18 +76,21 @@ input[type="text"], input[type="number"] {
   margin: 4px auto;
   display: block;
   background: #f6fafd;
-  transition: border .18s;
+  transition: border 0.18s;
   width: 100%;
   max-width: 300px;
   box-sizing: border-box;
 }
 
-input[type="text"]:focus, input[type="number"]:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
   border: 1.5px solid #448dda;
   background: #f0f6fd;
 }
 
-/* テーブルスタイル */
+/* ============================================
+   6. テーブル
+   ============================================ */
 .table-wrapper {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -82,10 +104,11 @@ table {
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
-  min-width: 450px; /* 5教科のみなので最小幅を縮小 */
+  min-width: 450px;
 }
 
-th, td {
+th,
+td {
   padding: 8px 12px;
   white-space: nowrap;
 }
@@ -114,7 +137,9 @@ tr.highlight {
   color: #a05a00;
 }
 
-/* サジェストリスト */
+/* ============================================
+   7. サジェストリスト（オートコンプリート）
+   ============================================ */
 .suggest-list {
   border: 1.2px solid #acd0fa;
   position: absolute;
@@ -126,7 +151,7 @@ tr.highlight {
   max-width: 400px;
   z-index: 99;
   border-radius: 10px;
-  box-shadow: 0 3px 13px rgba(62,92,140,0.10);
+  box-shadow: 0 3px 13px rgba(62, 92, 140, 0.10);
   left: 0;
   right: 0;
 }
@@ -142,7 +167,9 @@ tr.highlight {
   color: #13428d;
 }
 
-/* スコア入力 */
+/* ============================================
+   8. スコア入力
+   ============================================ */
 .score-input {
   width: 60px;
   font-size: 1.04em;
@@ -153,7 +180,8 @@ tr.highlight {
   text-align: center;
 }
 
-#score-total, #score-delta {
+#score-total,
+#score-delta {
   font-weight: bold;
 }
 
@@ -163,11 +191,13 @@ tr.highlight {
   word-break: break-word;
 }
 
-/* スコアサマリーボックス（重要情報を大きく表示） */
+/* ============================================
+   9. スコアサマリーボックス（重要情報表示）
+   ============================================ */
 .score-summary-box {
   display: flex;
   justify-content: space-around;
-  gap: 20px;
+  gap: 15px;
   margin-bottom: 20px;
   padding: 20px;
   background: linear-gradient(135deg, #eaf6ff 0%, #f0f9ff 100%);
@@ -178,7 +208,7 @@ tr.highlight {
 .summary-item {
   flex: 1;
   text-align: center;
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .summary-label-small {
@@ -209,7 +239,19 @@ tr.highlight {
   word-break: break-word;
 }
 
-/* スコアサマリー */
+.border-value {
+  color: #2a7f2a;
+  background: #e8f5e9;
+}
+
+.delta-value {
+  color: #ec3535;
+  background: #ffebee;
+}
+
+/* ============================================
+   10. スコアサマリー（旧スタイル・互換性のため残す）
+   ============================================ */
 .score-summary {
   background: #eaf6ff;
   border-radius: 12px;
@@ -246,7 +288,17 @@ tr.highlight {
   margin-left: 10px;
 }
 
-/* タブレット向け（481px〜768px） */
+/* ============================================
+   11. 内申点エリア
+   ============================================ */
+#naishin-area div {
+  text-align: center;
+  margin: 8px 0;
+}
+
+/* ============================================
+   12. レスポンシブデザイン - タブレット（481px〜768px）
+   ============================================ */
 @media (max-width: 768px) {
   .main-container {
     max-width: 95%;
@@ -267,7 +319,8 @@ tr.highlight {
     min-width: 550px;
   }
 
-  th, td {
+  th,
+  td {
     padding: 6px 8px;
   }
 
@@ -284,7 +337,8 @@ tr.highlight {
     font-size: 1.2em;
   }
 
-  input[type="text"], input[type="number"] {
+  input[type="text"],
+  input[type="number"] {
     max-width: 100%;
   }
 
@@ -293,7 +347,9 @@ tr.highlight {
   }
 }
 
-/* スマホ向け（〜480px） */
+/* ============================================
+   13. レスポンシブデザイン - スマホ（〜480px）
+   ============================================ */
 @media (max-width: 480px) {
   .main-container {
     max-width: 100%;
@@ -319,7 +375,8 @@ tr.highlight {
     margin-bottom: 8px;
   }
 
-  input[type="text"], input[type="number"] {
+  input[type="text"],
+  input[type="number"] {
     font-size: 16px; /* iOSでズーム防止 */
     padding: 10px 12px;
     width: 100%;
@@ -334,8 +391,12 @@ tr.highlight {
 
   .score-summary-box {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     padding: 15px;
+  }
+
+  .summary-item {
+    min-width: auto;
   }
 
   .summary-value-large {
@@ -410,7 +471,6 @@ tr.highlight {
     margin-top: 4px;
   }
 
-  /* 内申点表示の調整 */
   #naishin-area div {
     font-size: 0.95em;
     margin: 6px 0;
@@ -419,13 +479,9 @@ tr.highlight {
   }
 }
 
-/* 内申点エリアの中央寄せ */
-#naishin-area div {
-  text-align: center;
-  margin: 8px 0;
-}
-
-/* 大型デバイス向け（769px以上） */
+/* ============================================
+   14. レスポンシブデザイン - 大型デバイス（769px以上）
+   ============================================ */
 @media (min-width: 769px) {
   .main-container {
     max-width: 700px;
@@ -442,7 +498,9 @@ tr.highlight {
   }
 }
 
-/* 超大型画面向け（1200px以上） */
+/* ============================================
+   15. レスポンシブデザイン - 超大型画面（1200px以上）
+   ============================================ */
 @media (min-width: 1200px) {
   .main-container {
     max-width: 800px;
