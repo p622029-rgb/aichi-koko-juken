@@ -2,14 +2,16 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>...</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+        <title>愛知県公立高校 ボーダーシミュレーション</title>
         <link rel="stylesheet" href="style.css">
     </head>
 <body>
-  <h2>愛知県公立高校 ボーダーシミュレーション</h2>
+  <div class="main-container">
+    <h2>愛知県公立高校 ボーダーシミュレーション</h2>
 
-  <!-- 検索エリア -->
-  <div class="section" style="position:relative;max-width:420px;">
+    <!-- 検索エリア -->
+    <div class="section" style="position:relative;">
     <label>高校名で検索：
       <input type="text" id="school-search" autocomplete="off" placeholder="高校名を入力してください...">
     </label>
@@ -18,19 +20,22 @@
 
   <!-- 検索詳細テーブル -->
   <div class="section" id="result-area" style="display:none;">
-    <table>
-      <thead>
-        <tr>
-          <th>高校名</th><th>学科</th><th>校内順位計算方式</th><th>内申ボーダー</th><th>テストボーダー</th><th>ボーダー</th>
-        </tr>
-      </thead>
-      <tbody id="result-table"></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>高校名</th><th>学科</th><th>校内順位計算方式</th><th>内申ボーダー</th><th>テストボーダー</th><th>ボーダー</th>
+          </tr>
+        </thead>
+        <tbody id="result-table"></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- 内申点入力 -->
   <div class="section" id="naishin-area" style="display:none;">
-    <label>あなたの内申点（0〜45）：<input id="naishin" type="number" min="0" max="45" step="1"></label>
+    <label>あなたの内申点（0〜45）：</label>
+    <input id="naishin" type="number" min="0" max="45" step="1">
     <div>2倍した内申点： <span id="naishin-doubled">--</span></div>
     <div>
       <span>型の重み反映値: <span id="weighted-naishin">--</span></span>
@@ -40,22 +45,24 @@
 
   <!-- 当日点配分テーブル -->
   <div class="section" id="score-table-area" style="display:none;">
-    <table>
-      <thead>
-        <tr><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th><th>合計</th><th>何点必要か</th></tr>
-      </thead>
-      <tbody>
-        <tr id="score-input-row">
-          <td><input type="number" min="0" max="100" class="score-input" id="score-Japanese"></td>
-          <td><input type="number" min="0" max="100" class="score-input" id="score-Math"></td>
-          <td><input type="number" min="0" max="100" class="score-input" id="score-English"></td>
-          <td><input type="number" min="0" max="100" class="score-input" id="score-Science"></td>
-          <td><input type="number" min="0" max="100" class="score-input" id="score-Social"></td>
-          <td id="score-total">0</td>
-          <td id="score-delta">--</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th><th>合計</th><th>何点必要か</th></tr>
+        </thead>
+        <tbody>
+          <tr id="score-input-row">
+            <td><input type="number" min="0" max="100" class="score-input" id="score-Japanese"></td>
+            <td><input type="number" min="0" max="100" class="score-input" id="score-Math"></td>
+            <td><input type="number" min="0" max="100" class="score-input" id="score-English"></td>
+            <td><input type="number" min="0" max="100" class="score-input" id="score-Science"></td>
+            <td><input type="number" min="0" max="100" class="score-input" id="score-Social"></td>
+            <td id="score-total">0</td>
+            <td id="score-delta">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
 <script>
@@ -268,5 +275,6 @@ fetch('inozyuku_fixed_latest.json')
     if(val) updateSuggest(val);
   });
 </script>
+  </div>
 </body>
 </html>
