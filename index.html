@@ -261,7 +261,7 @@ function updateScoreTable() {
   if(s && needed!== '--') {
     delta = Math.round((sum - needed)*10)/10;
     if(delta > 0) delta = '+' + delta;
-    delta = `${showNeeded}点必要 / 差：${delta}`;
+    delta = `${showNeeded}点必要 / 現在との差：${delta}`;
   }
   document.getElementById('score-delta').textContent = delta;
 }
