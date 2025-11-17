@@ -45,21 +45,10 @@
 
   <!-- 当日点配分テーブル -->
   <div class="section" id="score-table-area" style="display:none;">
-    <!-- 重要情報を上部に大きく表示 -->
-    <div class="score-summary-box">
-      <div class="summary-item">
-        <div class="summary-label-small">合計点</div>
-        <div class="summary-value-large" id="score-total-display">0</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-label-small">何点必要か</div>
-        <div class="summary-value-large" id="score-delta-display">--</div>
-      </div>
-    </div>
     <div class="table-wrapper">
       <table>
         <thead>
-          <tr><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th></tr>
+          <tr><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th><th>合計</th><th>何点必要か</th></tr>
         </thead>
         <tbody>
           <tr id="score-input-row">
@@ -68,6 +57,8 @@
             <td><input type="number" min="0" max="100" class="score-input" id="score-English"></td>
             <td><input type="number" min="0" max="100" class="score-input" id="score-Science"></td>
             <td><input type="number" min="0" max="100" class="score-input" id="score-Social"></td>
+            <td id="score-total">0</td>
+            <td id="score-delta">--</td>
           </tr>
         </tbody>
       </table>
@@ -233,8 +224,6 @@ function showNaishinResults() {
       exam_reach = exam_needed;
   }
   document.getElementById('todojitsu-score').textContent = Math.round(exam_reach*10)/10 + ` (${getExamLabel(st)})`;
-  // スコアテーブルも更新（内申点変更時）
-  updateScoreTable();
 }
 // --- 5教科入力 ---
 const subjects = ['Japanese', 'Math', 'English', 'Science', 'Social'];
@@ -266,19 +255,15 @@ function updateScoreTable() {
     }
     showNeeded = Math.round(needed*10)/10;
   }
-  // 上部の大きな表示を更新
-  document.getElementById('score-total-display').textContent = sum + '点';
+  document.getElementById('score-total').textContent = sum;
   // 差（合計-取るべき当日点）
   let delta = '--';
-  let deltaDisplay = '--';
   if(s && needed!== '--') {
     delta = Math.round((sum - needed)*10)/10;
-    const deltaSign = delta > 0 ? '+' : '';
-    deltaDisplay = `${showNeeded}点必要 / 差：${deltaSign}${delta}点`;
     if(delta > 0) delta = '+' + delta;
     delta = `${showNeeded}点必要 / 現在との差：${delta}`;
   }
-  document.getElementById('score-delta-display').textContent = deltaDisplay;
+  document.getElementById('score-delta').textContent = delta;
 }
 // --- データ取得 ---
 fetch('inozyuku_fixed_latest.json')
