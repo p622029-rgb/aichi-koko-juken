@@ -48,16 +48,12 @@
     <!-- 重要情報を上部に大きく表示 -->
     <div class="score-summary-box">
       <div class="summary-item">
-        <div class="summary-label-small">ボーダー</div>
-        <div class="summary-value-large border-value" id="border-display">--</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-label-small">現在の合計点</div>
+        <div class="summary-label-small">合計点</div>
         <div class="summary-value-large" id="score-total-display">0</div>
       </div>
       <div class="summary-item">
-        <div class="summary-label-small">現在との差</div>
-        <div class="summary-value-large delta-value" id="score-delta-display">--</div>
+        <div class="summary-label-small">何点必要か</div>
+        <div class="summary-value-large" id="score-delta-display">--</div>
       </div>
     </div>
     <div class="table-wrapper">
@@ -123,9 +119,6 @@ function selectSchoolByNameAndCourse(name, course) {
     document.getElementById('result-area').style.display = '';
     document.getElementById('naishin-area').style.display = '';
     document.getElementById('score-table-area').style.display = '';
-    // ボーダーを即座に表示
-    const border_total = Number(selectedSchool.border_total || 0);
-    document.getElementById('border-display').textContent = border_total ? border_total + '点' : '--';
   } else {
     document.getElementById('result-area').style.display = 'none';
     document.getElementById('naishin-area').style.display = 'none';
@@ -274,14 +267,6 @@ function updateScoreTable() {
     showNeeded = Math.round(needed*10)/10;
   }
   // 上部の大きな表示を更新
-  // ボーダー表示
-  if(s) {
-    const border_total = Number(s.border_total || 0);
-    document.getElementById('border-display').textContent = border_total ? border_total + '点' : '--';
-  } else {
-    document.getElementById('border-display').textContent = '--';
-  }
-  // 現在の合計点
   document.getElementById('score-total-display').textContent = sum + '点';
   // 差（合計-取るべき当日点）
   let delta = '--';
@@ -289,7 +274,7 @@ function updateScoreTable() {
   if(s && needed!== '--') {
     delta = Math.round((sum - needed)*10)/10;
     const deltaSign = delta > 0 ? '+' : '';
-    deltaDisplay = `${deltaSign}${delta}点`;
+    deltaDisplay = `${showNeeded}点必要 / 差：${deltaSign}${delta}点`;
     if(delta > 0) delta = '+' + delta;
     delta = `${showNeeded}点必要 / 現在との差：${delta}`;
   }
